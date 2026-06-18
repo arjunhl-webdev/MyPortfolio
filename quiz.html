@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Premium Quiz App</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#141e30,#243b55);
+}
+
+.quiz-container{
+    width:600px;
+    max-width:90%;
+    padding:30px;
+    border-radius:25px;
+    background:rgba(255,255,255,0.1);
+    backdrop-filter:blur(12px);
+    box-shadow:0 0 30px rgba(255,255,255,0.2);
+    color:white;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+#progress{
+    margin-bottom:15px;
+}
+
+#question{
+    font-size:22px;
+    margin-bottom:20px;
+}
+
+.btn{
+    width:100%;
+    padding:15px;
+    margin:8px 0;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.btn:hover{
+    transform:translateX(5px);
+}
+
+.correct{
+    background:#00c853;
+    color:white;
+}
+
+.wrong{
+    background:#ff1744;
+    color:white;
+}
+
+.option{
+    background:white;
+    color:#333;
+}
+
+#next-btn{
+    margin-top:20px;
+    padding:12px 25px;
+    border:none;
+    border-radius:12px;
+    background:#2196f3;
+    color:white;
+    cursor:pointer;
+    display:none;
+}
+
+.back{
+    display:inline-block;
+    margin-top:20px;
+    text-decoration:none;
+    color:white;
+    background:linear-gradient(45deg,#00c6ff,#0072ff);
+    padding:12px 25px;
+    border-radius:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="quiz-container">
+
+<h1>Premium Quiz App</h1>
+
+<p id="progress"></p>
+
+<h2 id="question"></h2>
+
+<div id="answer-buttons"></div>
+
+<button id="next-btn">Next Question</button>
+
+<a href="index.html" class="back">Back to Portfolio</a>
+
+</div>
+
+<script>
+
+const questions = [
+
+{
+question:"Which language is used for web page structure?",
+answers:[
+{text:"HTML",correct:true},
+{text:"CSS",correct:false},
+{text:"Python",correct:false},
+{text:"Java",correct:false}
+]
+},
+
+{
+question:"Which language styles a webpage?",
+answers:[
+{text:"HTML",correct:false},
+{text:"CSS",correct:true},
+{text:"PHP",correct:false},
+{text:"C++",correct:false}
+]
+},
+
+{
+question:"Which language adds interactivity?",
+answers:[
+{text:"JavaScript",correct:true},
+{text:"HTML",correct:false},
+{text:"SQL",correct:false},
+{text:"Python",correct:false}
+]
+}
+
+];
+
+let currentQuestionIndex = 0;
+let score = 0;
+
+const questionElement = document.getElementById("question");
+const answerButtons = document.getElementById("answer-buttons");
+const nextButton = document.getElementById("next-btn");
+const progress = document.getElementById("progress");
+
+function startQuiz(){
+currentQuestionIndex = 0;
+score = 0;
+showQuestion();
+}
+
+function showQuestion(){
+
+resetState();
+
+let currentQuestion = questions[currentQuestionIndex];
+
+progress.innerHTML =
+"Question " + (currentQuestionIndex+1) +
+" of " + questions.length;
+
+questionElement.innerHTML =
+currentQuestion.question;
+
+currentQuestion.answers.forEach(answer => {
+
+let button = document.createElement("button");
+
+button.innerHTML = answer.text;
+
+button.classList.add("btn","option");
+
+button.addEventListener("click",() =>
+selectAnswer(answer.correct,button));
+
+answerButtons.appendChild(button);
+
+});
+
+}
+
+function resetState(){
+
+nextButton.style.display="none";
+
+while(answerButtons.firstChild){
+answerButtons.removeChild(answerButtons.firstChild);
+}
+
+}
+
+function selectAnswer(correct,button){
+
+if(correct){
+button.classList.add("correct");
+score++;
+}else{
+button.classList.add("wrong");
+}
+
+Array.from(answerButtons.children)
+.forEach(btn => btn.disabled=true);
+
+nextButton.style.display="block";
+}
+
+nextButton.addEventListener("click",()=>{
+
+currentQuestionIndex++;
+
+if(currentQuestionIndex < questions.length){
+showQuestion();
+}else{
+showScore();
+}
+
+});
+
+function showScore(){
+
+resetState();
+
+questionElement.innerHTML =
+"You scored " + score +
+" out of " + questions.length;
+
+nextButton.innerHTML="Restart Quiz";
+nextButton.style.display="block";
+
+nextButton.onclick = startQuiz;
+
+}
+
+startQuiz();
+
+</script>
+
+</body>
+</html>
